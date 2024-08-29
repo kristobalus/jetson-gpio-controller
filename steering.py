@@ -20,16 +20,35 @@ GPIO.setup(pin, GPIO.OUT)
 pwm = GPIO.PWM(pin, frequency)
 pwm.start(neutral_position)
 
+
+def left():
+    for duty_cycle in range(neutral_position, max_left, 1):
+        print(duty_cycle)
+        pwm.ChangeDutyCycle(duty_cycle)
+        time.sleep(0.1)
+
+    for duty_cycle in range(max_left, neutral_position, -1):
+        print(duty_cycle)
+        pwm.ChangeDutyCycle(duty_cycle)
+        time.sleep(0.1)
+
+
+def right():
+    for duty_cycle in range(neutral_position, max_right, -1):
+        print(duty_cycle)
+        pwm.ChangeDutyCycle(duty_cycle)
+        time.sleep(0.1)
+
+    for duty_cycle in range(max_right, neutral_position, 1):
+        print(duty_cycle)
+        pwm.ChangeDutyCycle(duty_cycle)
+        time.sleep(0.1)
+
+
 try:
     while True:
-        for duty_cycle in range(0, max_left, 5):
-            print(duty_cycle)
-            pwm.ChangeDutyCycle(duty_cycle)
-            time.sleep(0.1)
-        for duty_cycle in range(max_left, -1, -5):
-            print(duty_cycle)
-            pwm.ChangeDutyCycle(duty_cycle)
-            time.sleep(0.1)
+        left()
+        right()
 
 finally:
     pwm.stop()
