@@ -14,15 +14,25 @@ GPIO.setup(pin, GPIO.OUT)
 pwm = GPIO.PWM(pin, frequency)
 pwm.start(full_stop)
 
-try:
+
+def forward():
     for duty_cycle in range(full_stop, full_forward + 1, 1):
         print(duty_cycle)
         pwm.ChangeDutyCycle(duty_cycle)
-        time.sleep(1)
+        time.sleep(0.1)
+
+
+def backward():
     for duty_cycle in range(full_forward, full_stop - 1, -1):
         print(duty_cycle)
         pwm.ChangeDutyCycle(duty_cycle)
-        time.sleep(1)
+        time.sleep(0.1)
+
+
+try:
+    while True:
+        forward()
+
 finally:
     pwm.stop()
     GPIO.cleanup()
