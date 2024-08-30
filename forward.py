@@ -16,7 +16,7 @@ pwm.start(full_stop)
 
 
 def forward():
-    for duty_cycle in range(full_stop, full_forward + 1, 1):
+    for duty_cycle in range(full_stop, full_forward - 1, -1):
         print(duty_cycle)
         pwm.ChangeDutyCycle(duty_cycle)
         time.sleep(0.1)
@@ -50,7 +50,6 @@ try:
         forward_to_stop()
         time.sleep(5)
         backward()
-        time.sleep(5)
         backward_to_stop()
 
 finally:
