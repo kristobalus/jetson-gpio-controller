@@ -48,7 +48,7 @@ try:
         # forward()
         # forward_to_stop()
         backward()
-        # backward_to_stop()
+        backward_to_stop()
 
 finally:
     pwm.stop()
