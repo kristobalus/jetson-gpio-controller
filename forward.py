@@ -49,8 +49,9 @@ try:
         time.sleep(5)
         forward_to_stop()
         time.sleep(5)
-        # backward()
-        # backward_to_stop()
+        backward()
+        time.sleep(5)
+        backward_to_stop()
 
 finally:
     pwm.stop()
