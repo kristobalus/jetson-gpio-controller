@@ -9,8 +9,8 @@ import time
 # 66 - max left
 
 neutral_position = 60
-max_right = 53
-max_left = 66
+max_right = 70
+max_left = 50
 
 pin = 15
 frequency = 400
