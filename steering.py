@@ -27,6 +27,8 @@ def right():
         pwm.ChangeDutyCycle(duty_cycle)
         time.sleep(0.1)
 
+
+def right_to_neutral():
     for duty_cycle in range(max_right, neutral_position, -1):
         print(duty_cycle)
         pwm.ChangeDutyCycle(duty_cycle)
@@ -39,6 +41,8 @@ def left():
         pwm.ChangeDutyCycle(duty_cycle)
         time.sleep(0.1)
 
+
+def left_to_neutral():
     for duty_cycle in range(max_left, neutral_position, 1):
         print(duty_cycle)
         pwm.ChangeDutyCycle(duty_cycle)
@@ -48,7 +52,10 @@ def left():
 try:
     while True:
         left()
+        left_to_neutral()
+        time.sleep(3)
         right()
+        right_to_neutral()
 
 finally:
     pwm.stop()
