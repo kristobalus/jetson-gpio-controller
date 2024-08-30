@@ -30,6 +30,7 @@ def go_forward(interval):
 
 def go_backward(interval):
     start_time = time.time()
+    pwm.ChangeDutyCycle(full_backward)
     while time.time() - start_time < interval:
         pwm.ChangeDutyCycle(full_backward)
 
