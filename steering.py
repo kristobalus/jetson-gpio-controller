@@ -53,7 +53,7 @@ try:
     while True:
         neutral_left()
         left_to_neutral()
-        time.sleep(3)
+        time.sleep(1)
         neutral_to_right()
         right_to_neutral()
 
