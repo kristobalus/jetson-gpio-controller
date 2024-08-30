@@ -45,8 +45,9 @@ def backward_to_stop():
 
 try:
     while True:
-        # forward()
-        # forward_to_stop()
+        forward()
+        forward_to_stop()
+        time.sleep(3)
         backward()
         backward_to_stop()
 
