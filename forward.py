@@ -47,9 +47,9 @@ try:
     while True:
         forward()
         forward_to_stop()
-        backward()
-        backward_to_stop()
-        time.sleep(1)
+        # backward()
+        # backward_to_stop()
+        time.sleep(3)
 
 finally:
     pwm.stop()
