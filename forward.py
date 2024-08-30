@@ -45,8 +45,8 @@ def backward_to_stop():
 
 try:
     forward()
-    while True:
-        pwm.ChangeDutyCycle(full_forward)
+    # while True:
+    #    pwm.ChangeDutyCycle(full_forward)
     # forward()
     # forward_to_stop()
     # time.sleep(1)
