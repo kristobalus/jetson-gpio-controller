@@ -44,10 +44,10 @@ def backward_to_stop():
 try:
     # while True:
     forward()
-    forward_to_stop()
-    time.sleep(1)
-    backward()
-    backward_to_stop()
+    # forward_to_stop()
+    # time.sleep(1)
+    # backward()
+    # backward_to_stop()
 
 finally:
     pwm.stop()
