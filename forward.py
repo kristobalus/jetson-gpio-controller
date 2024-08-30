@@ -6,7 +6,7 @@ import time
 full_forward = 55
 full_backward = 40
 full_stop = 53
-pin = 33
+pin = 32
 frequency = 400
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(pin, GPIO.OUT)
