@@ -54,8 +54,8 @@ try:
         left()
         left_to_neutral()
         time.sleep(3)
-        right()
-        right_to_neutral()
+        # right()
+        # right_to_neutral()
 
 finally:
     pwm.stop()
