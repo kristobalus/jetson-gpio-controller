@@ -46,10 +46,11 @@ def backward_to_stop():
 try:
     while True:
         forward()
+        time.sleep(5)
         forward_to_stop()
+        time.sleep(5)
         # backward()
         # backward_to_stop()
-        time.sleep(3)
 
 finally:
     pwm.stop()
