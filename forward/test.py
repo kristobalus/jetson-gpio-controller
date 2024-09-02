@@ -62,7 +62,7 @@ def go_backward(interval):
 
 
 try:
-    go_forward(10)
+    # go_forward(10)
     go_backward(10)
 
 finally:
