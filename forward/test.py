@@ -15,6 +15,12 @@ pwm = GPIO.PWM(pin, frequency)
 pwm.start(full_stop)
 
 
+def go_stop(interval):
+    start_time = time.time()
+    while time.time() - start_time < interval:
+        pwm.ChangeDutyCycle(full_stop)
+
+
 def go_forward(interval):
     start_time = time.time()
     while time.time() - start_time < interval:
@@ -62,7 +68,9 @@ def go_backward(interval):
 
 
 try:
-    # go_forward(10)
+    go_stop(0.1)
+    go_backward(0.1)
+    go_stop(0.1)
     go_backward(10)
 
 finally:
