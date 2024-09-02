@@ -68,11 +68,12 @@ def go_backward(interval):
 
 
 try:
-    # successful
+    # successful motion backward
     # go_stop(0.1)
     # go_backward(0.1)
     # go_stop(0.1)
     # go_backward(10)
+
     go_stop(0.001)
     go_backward(0.001)
     go_stop(0.001)
