@@ -68,11 +68,15 @@ def go_backward(interval):
 
 
 try:
-    go_stop(0.1)
-    go_backward(0.1)
-    go_stop(0.1)
+    # successful
+    # go_stop(0.1)
+    # go_backward(0.1)
+    # go_stop(0.1)
+    # go_backward(10)
+    go_stop(0.001)
+    go_backward(0.001)
+    go_stop(0.001)
     go_backward(10)
-
 finally:
     pwm.stop()
     GPIO.cleanup()
