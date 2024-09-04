@@ -4,7 +4,7 @@ RUN apt-get update
 RUN apt-get install -y python3-pip
 
 # Install Python packages
-RUN pip3 install pyserial paho-mqtt
+RUN pip3 install pyserial paho-mqtt Jetson.GPIO
 
 # Copy the service code to /opt
 COPY service.py /opt/service.py
