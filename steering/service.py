@@ -51,6 +51,9 @@ def set_signal(value):
         dynamic_range = abs(neutral_position - max_right_position)
         duty_cycle = neutral_position + abs(delta - 0.5) / 0.5 * dynamic_range
         pwm.ChangeDutyCycle(duty_cycle)
+    elif delta == 0:
+        # go right
+        pwm.ChangeDutyCycle(neutral_position)
 
 
 # MQTT event handlers
