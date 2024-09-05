@@ -2,7 +2,7 @@
 
 # Read the version from package.json
 BRANCH=$(git branch --show-current)
-VERSION="1.1.0"
+VERSION="1.1.1"
 IMAGE=${IMAGE:-"ghcr.io/flux-agi/flux-cart-control-steering"}
 echo "building image $IMAGE:$VERSION using buildx..."
 
