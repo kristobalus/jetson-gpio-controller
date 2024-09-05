@@ -7,7 +7,7 @@ import Jetson.GPIO as GPIO
 import paho.mqtt.client as mqtt
 
 # Get the configuration JSON from the environment variable
-config_json = os.getenv('CONFIGURATION')
+config_json = os.getenv("CONFIGURATION")
 
 # Parse the JSON to extract the serial port device name
 if config_json:
@@ -16,14 +16,15 @@ else:
     raise ValueError("CONFIGURATION environment variable not set or is empty")
 
 # GPIO and PWM configuration
-neutral_position = int(config.get('neutral_position', 60))
-max_right = int(config.get('max_right', 70))
-max_left = int(config.get('max_left', 50))
-pin = int(config.get('pin', 15))
-frequency = int(config.get('frequency', 400))
+full_forward = int(config.get("full_forward", 55))
+full_backward = int(config.get("full_backward", 40))
+full_stop = int(config.get("full_stop", 53))
+
+pin = int(config.get("pin", 32))
+frequency = int(config.get("frequency", 400))
 
 # MQTT Configuration
-MQTT_BROKER = os.getenv('MQTT_BROKER')
+MQTT_BROKER = os.getenv("MQTT_BROKER")
 parsed_url = urlparse(MQTT_BROKER)
 MQTT_BROKER_HOST = parsed_url.hostname
 MQTT_BROKER_PORT = int(parsed_url.port)
@@ -32,35 +33,29 @@ GPIO.setmode(GPIO.BOARD)
 GPIO.setup(pin, GPIO.OUT)
 
 pwm = GPIO.PWM(pin, frequency)
-pwm.start(neutral_position)
+pwm.start(full_stop)
 
 
-def neutral_to_left():
-    for duty_cycle in range(neutral_position, max_right, 1):
-        print(duty_cycle)
-        pwm.ChangeDutyCycle(duty_cycle)
-        time.sleep(0.1)
+def go_stop(interval):
+    start_time = time.time()
+    while time.time() - start_time < interval:
+        pwm.ChangeDutyCycle(full_stop)
 
 
-def left_to_neutral():
-    for duty_cycle in range(max_right, neutral_position, -1):
-        print(duty_cycle)
-        pwm.ChangeDutyCycle(duty_cycle)
-        time.sleep(0.1)
+def go_forward(interval):
+    start_time = time.time()
+    while time.time() - start_time < interval:
+        pwm.ChangeDutyCycle(full_forward)
 
 
-def neutral_to_right():
-    for duty_cycle in range(neutral_position, max_left, -1):
-        print(duty_cycle)
-        pwm.ChangeDutyCycle(duty_cycle)
-        time.sleep(0.1)
+def go_backward(interval):
+    start_time = time.time()
+    pwm.ChangeDutyCycle(full_backward)
+    pwm.ChangeDutyCycle(full_stop)
+    while time.time() - start_time < interval:
+        pwm.ChangeDutyCycle(full_backward)
 
-
-def right_to_neutral():
-    for duty_cycle in range(max_left, neutral_position, 1):
-        print(duty_cycle)
-        pwm.ChangeDutyCycle(duty_cycle)
-        time.sleep(0.1)
+    go_forward(0.1)
 
 
 # MQTT event handlers
@@ -74,14 +69,12 @@ def on_message(client, userdata, msg):
     print("Message received on topic " + msg.topic + ": " + str(msg.payload))
     command = msg.payload.decode()
 
-    if command == "neutral_to_left":
-        neutral_to_left()
-    elif command == "left_to_neutral":
-        left_to_neutral()
-    elif command == "neutral_to_right":
-        neutral_to_right()
-    elif command == "right_to_neutral":
-        right_to_neutral()
+    if command == "full_forward":
+        go_forward(1)
+    elif command == "full_backward":
+        go_backward(1)
+    elif command == "full_stop":
+        go_stop(0.1)
     else:
         print("Unknown command")
 
