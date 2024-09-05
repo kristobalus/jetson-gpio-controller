@@ -52,7 +52,7 @@ def set_signal(value):
         duty_cycle = neutral_position + abs(delta - 0.5) / 0.5 * dynamic_range
         pwm.ChangeDutyCycle(duty_cycle)
     elif delta == 0:
-        # go right
+        # go neutral
         pwm.ChangeDutyCycle(neutral_position)
 
 
