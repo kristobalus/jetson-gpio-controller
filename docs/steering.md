@@ -30,8 +30,8 @@ e.g. in activeConfig
   "id": "hazs57df2",
   "serviceType": "RIM",
   "location": null,
-  "image": "",
-  "tag": "",
+  "image": "ghcr.io/flux-agi/flux-cart-control-steering:1.0.0",
+  "tag": "ghcr.io/flux-agi/flux-cart-control-steering",
   "alias": "rcCarPeriphery",
   "description": "Car steering wheel controller",
   "settings": {
