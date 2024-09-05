@@ -35,6 +35,8 @@ GPIO.setup(pin, GPIO.OUT)
 pwm = GPIO.PWM(pin, frequency)
 pwm.start(full_stop)
 
+current_state = ""
+
 
 def go_stop(interval):
     start_time = time.time()
@@ -55,8 +57,6 @@ def go_backward(interval):
     while time.time() - start_time < interval:
         pwm.ChangeDutyCycle(full_backward)
 
-    go_forward(0.1)
-
 
 # MQTT event handlers
 def on_connect(client, userdata, flags, rc):
@@ -66,17 +66,27 @@ def on_connect(client, userdata, flags, rc):
 
 
 def on_message(client, userdata, msg):
-    print("Message received on topic " + msg.topic + ": " + str(msg.payload))
-    command = msg.payload.decode()
+    global current_state
+    print(f"Message received on topic {msg.topic}:{str(msg.payload)}")
 
-    if command == "full_forward":
-        go_forward(1)
-    elif command == "full_backward":
+    if not current_state:
+        current_state = 0
+
+    value = float(msg.payload.decode())
+    if value >= 0.51:
+        go_forward(0.1)
+    elif value <= 0.49:
+        s = float(current_state)
+        if s >= 0.49 and s <= 0.51:
+            go_stop(0.1)
+            go_backward(0.1)
+            go_stop(0.1)
         go_backward(1)
-    elif command == "full_stop":
+        go_forward(0.1)
+    elif value >= 0.49 and value <= 0.51:
         go_stop(0.1)
-    else:
-        print("Unknown command")
+
+    current_state = value
 
 
 # MQTT client setup
