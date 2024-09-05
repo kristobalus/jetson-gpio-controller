@@ -1,4 +1,13 @@
 
+
+image: 
+```text
+ghcr.io/flux-agi/flux-cart-control-steering:1.0.0
+```
+see https://github.com/orgs/flux-agi/packages/container/package/flux-cart-control-steering for versions and tags
+
+
+
 service should have settings
 ```json
 {
