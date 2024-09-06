@@ -34,11 +34,49 @@ def go_backward(interval):
     while time.time() - start_time < interval:
         pwm.ChangeDutyCycle(full_backward)
 
+
+# def forward():
+#     for duty_cycle in range(full_stop, full_forward + 1, 1):
+#         print(duty_cycle)
+#         pwm.ChangeDutyCycle(duty_cycle)
+#         time.sleep(0.1)
+
+
+# def stop():
+#     pwm.ChangeDutyCycle(full_stop)
+
+
+# def forward_to_stop():
+#     for duty_cycle in range(full_forward, full_stop - 1, -1):
+#         print(duty_cycle)
+#         pwm.ChangeDutyCycle(duty_cycle)
+#         time.sleep(0.1)
+
+
+# def backward():
+#     for duty_cycle in range(full_stop, full_backward - 1, -1):
+#         print(duty_cycle)
+#         pwm.ChangeDutyCycle(duty_cycle)
+#         time.sleep(0.1)
+
+
+# def backward_to_stop():
+#     for duty_cycle in range(full_backward, full_stop + 1, 1):
+#         print(duty_cycle)
+#         pwm.ChangeDutyCycle(duty_cycle)
+#         time.sleep(0.1)
+
+
 try:
     # successful motion backward
-    go_forward(10)
+    # go_forward(10)
+    # go_stop(0.1)
+    # go_backward(0.1)
+    # go_stop(0.1)
 
-    # successful motion backward
+    # go_stop(1)
+    # go_forward(10)
+
     go_stop(0.1)
     go_backward(0.1)
     go_stop(0.1)
