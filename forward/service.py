@@ -61,13 +61,13 @@ def go_backward(interval):
 
 # MQTT event handlers
 def on_connect(client, userdata, flags, rc):
-    print("Connected with result code " + str(rc))
+    print("MQTT connected with result code " + str(rc))
     # Subscribe to a topic
     client.subscribe(topic)
 
 
 def on_message(client, userdata, msg):
-    print("Message received on topic " + msg.topic + ": " + str(msg.payload))
+    print("MQTT message received on topic " + msg.topic + ": " + str(msg.payload))
 
     if msg.topic == topic:
         value = float(msg.payload.decode())
