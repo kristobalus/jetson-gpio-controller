@@ -11,6 +11,8 @@ services:
       context: .
       dockerfile: ./steering/Dockerfile
     privileged: true
+    logging:
+
     environment:
       MQTT_BROKER: "mqtt://mqtt-broker:1883"
       CONFIGURATION: |

@@ -73,8 +73,7 @@ def on_message(client, userdata, msg):
         print("Unknown command")
 
 
-print(MQTT_BROKER_HOST)
-print(MQTT_BROKER_PORT)
+print(f"connecting to mqtt broker at {MQTT_BROKER_HOST}:{MQTT_BROKER_PORT}")
 
 # MQTT client setup
 client = mqtt.Client(reconnect_on_failure=True)
