@@ -61,6 +61,7 @@ def on_connect(client, userdata, flags, rc):
     print("MQTT connected with result code: " + str(rc))
     # Subscribe to a topic
     client.subscribe(topic)
+    print(f"MQTT subscribed to {topic}")
 
 
 def on_message(client, userdata, msg):
