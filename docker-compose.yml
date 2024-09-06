@@ -8,8 +8,8 @@ services:
   steering:
     image: steering-control
     build:
-      context: ./steering
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./steering/Dockerfile
     privileged: true
     environment:
       MQTT_BROKER: "mqtt://mqtt-broker:1883"
