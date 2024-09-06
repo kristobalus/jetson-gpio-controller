@@ -6,7 +6,10 @@ networks:
 
 services:
   steering:
-    image: ghcr.io/flux-agi/flux-cart-control-steering:latest
+    image: steering-control
+    build:
+      context: ./steering
+      dockerfile: Dockerfile
     privileged: true
     environment:
       MQTT_BROKER: "mqtt://mqtt-broker:1883"
