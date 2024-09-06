@@ -63,7 +63,7 @@ def go_backward(interval):
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
     # Subscribe to a topic
-    client.subscribe("drive/command")
+    client.subscribe(topic)
 
 
 def on_message(client, userdata, msg):
