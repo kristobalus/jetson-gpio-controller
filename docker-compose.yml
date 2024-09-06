@@ -22,3 +22,5 @@ services:
           "frequency": 400,
           "topic": "neurons/test-steering/out"
         }
+    networks:
+      app:
