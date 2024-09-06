@@ -88,11 +88,14 @@ def set_signal(value):
         go_forward(1)
     elif value <= 0.49:
         # backward motion
-        go_stop(0.1)
-        go_backward(0.1)
-        go_stop(0.1)
-        go_backward(1)
-        go_forward(0.1)
+        if current_state < 0.5:
+            go_backward(1)
+        else:
+            go_stop(0.1)
+            go_backward(0.1)
+            go_stop(0.1)
+            go_backward(1)
+            go_forward(0.1)
     elif value == 0.5:
         # brake
         go_stop(0.1)
