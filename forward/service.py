@@ -85,7 +85,7 @@ def set_signal(value):
 
     if value >= 0.51:
         # forward motion
-        go_forward(0.1)
+        go_forward(1)
     elif value <= 0.49:
         # backward motion
         go_forward(0.1)
