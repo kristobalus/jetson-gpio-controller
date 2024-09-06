@@ -1,0 +1,21 @@
+
+networks:
+  app:
+    external: true
+    name: "flux-network"
+
+services:
+  steering:
+    image: ghcr.io/flux-agi/flux-cart-control-steering:latest
+    privileged: true
+    environment:
+      MQTT_BROKER: "mqtt://mqtt-broker:1883"
+      CONFIGURATION: |
+        {
+          "neutral_position":  60,
+          "max_right_position": 70,
+          "max_left_position": 50,
+          "pin":  15,
+          "frequency": 400,
+          "topic": "neurons/test-steering/out"
+        }
