@@ -19,6 +19,7 @@ else:
 full_forward = int(config.get("full_forward", 55))
 full_backward = int(config.get("full_backward", 40))
 full_stop = int(config.get("full_stop", 53))
+topic = config.get('topic')
 
 pin = int(config.get("pin", 32))
 frequency = int(config.get("frequency", 400))
@@ -35,7 +36,7 @@ GPIO.setup(pin, GPIO.OUT)
 pwm = GPIO.PWM(pin, frequency)
 pwm.start(full_stop)
 
-current_state = ""
+current_state = 0
 
 
 def go_stop(interval):
@@ -66,24 +67,35 @@ def on_connect(client, userdata, flags, rc):
 
 
 def on_message(client, userdata, msg):
+    print("Message received on topic " + msg.topic + ": " + str(msg.payload))
+
+    if msg.topic == topic:
+        value = float(msg.payload.decode())
+        print(f"signal: {value}")
+        set_signal(value)
+    else:
+        print("Unknown topic")
+
+
+def set_signal(value):
+    """
+    signal is sent by neuron network or by desktop application, range 0..1, 0.5 is the middle
+    """
     global current_state
-    print(f"Message received on topic {msg.topic}:{str(msg.payload)}")
 
-    if not current_state:
-        current_state = 0
-
-    value = float(msg.payload.decode())
     if value >= 0.51:
+        # forward motion
         go_forward(0.1)
     elif value <= 0.49:
-        s = float(current_state)
-        if s >= 0.49 and s <= 0.51:
+        # backward motion
+        go_forward(0.1)
+        if 0.49 <= current_state <= 0.51:
             go_stop(0.1)
             go_backward(0.1)
             go_stop(0.1)
         go_backward(1)
-        go_forward(0.1)
-    elif value >= 0.49 and value <= 0.51:
+    elif value == 0.5:
+        # brake
         go_stop(0.1)
 
     current_state = value

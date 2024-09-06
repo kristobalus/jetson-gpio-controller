@@ -77,7 +77,7 @@ def on_message(client, userdata, msg):
         print(f"signal: {value}")
         set_signal(value)
     else:
-        print("Unknown command")
+        print("Unknown topic")
 
 
 print(f"MQTT connecting at {MQTT_BROKER_HOST}:{MQTT_BROKER_PORT}")

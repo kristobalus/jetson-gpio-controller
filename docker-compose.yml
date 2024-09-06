@@ -20,7 +20,27 @@ services:
           "max_left_position": 52,
           "pin":  15,
           "frequency": 400,
-          "topic": "neurons/test/out"
+          "topic": "neurons/test-steering/out"
+        }
+    networks:
+      app:
+
+  forward:
+    image: motion-control
+    build:
+      context: .
+      dockerfile: ./forward/Dockerfile
+    privileged: true
+    environment:
+      MQTT_BROKER: "mqtt://mqtt-broker:1883"
+      CONFIGURATION: |
+        {
+          "full_forward":  55,
+          "full_backward": 40,
+          "full_stop": 53,
+          "pin":  15,
+          "frequency": 400,
+          "topic": "neurons/test-forward/out"
         }
     networks:
       app:
