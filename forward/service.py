@@ -82,6 +82,7 @@ def set_signal(value):
     signal is sent by neuron network or by desktop application, range 0..1, 0.5 is the middle
     """
     global current_state
+    print(f"current_state={current_state}")
 
     if value >= 0.51:
         # forward motion
@@ -91,6 +92,7 @@ def set_signal(value):
         if current_state < 0.5:
             go_backward(1)
             go_forward(0.1)
+            current_state = 0.5
         else:
             go_stop(0.1)
             go_backward(0.1)
