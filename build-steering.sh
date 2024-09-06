@@ -1,8 +1,15 @@
 #!/bin/bash
 
+
+# Path to the .cz.toml file
+CZ_CONFIG_FILE=".cz.toml"
+
+# Extract the version value from the TOML file
+VERSION=$(grep '^version\s*=' "$CZ_CONFIG_FILE" | sed -E 's/.*"([0-9]+\.[0-9]+\.[0-9]+)".*/\1/')
+echo "VERSION=$VERSION"
+
 # Read the version from package.json
 BRANCH=$(git branch --show-current)
-VERSION="1.1.2"
 IMAGE=${IMAGE:-"ghcr.io/flux-agi/flux-cart-control-steering"}
 echo "building image $IMAGE:$VERSION using buildx..."
 
