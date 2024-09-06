@@ -77,6 +77,21 @@ def on_message(client, userdata, msg):
         print("Unknown topic")
 
 
+def backward():
+    global current_state
+    go_stop(0.1)
+    go_backward(0.1)
+    go_stop(0.1)
+    go_backward(1)
+    go_forward(0.1)
+    current_state = 0.5
+
+def forward():
+    global current_state
+    go_forward(1)
+    current_state = 0.5
+
+
 def set_signal(value):
     """
     signal is sent by neuron network or by desktop application, range 0..1, 0.5 is the middle
@@ -86,20 +101,11 @@ def set_signal(value):
 
     if value >= 0.51:
         # forward motion
-        go_forward(1)
+        forward()
     elif value <= 0.49:
         # backward motion
-        if current_state < 0.5:
-            go_backward(1)
-            go_forward(0.1)
-            current_state = 0.5
-        else:
-            go_stop(0.1)
-            go_backward(0.1)
-            go_stop(0.1)
-            go_backward(1)
-            go_forward(0.1)
-            current_state = 0.5
+        if current_state > 0.5:
+            backward()
     elif value == 0.5:
         # brake
         go_stop(0.1)
