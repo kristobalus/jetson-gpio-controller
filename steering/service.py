@@ -21,7 +21,7 @@ max_right_position = int(config.get('max_right_position', 70))
 max_left_position = int(config.get('max_left_position', 50))
 pin = int(config.get('pin', 15))
 frequency = int(config.get('frequency', 400))
-topic = int(config.get('topic'))
+topic = config.get('topic')
 
 
 # MQTT Configuration
