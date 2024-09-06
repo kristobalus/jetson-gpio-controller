@@ -24,7 +24,7 @@ else
     docker buildx create --use --name buildx_instance --driver docker-container --bootstrap
 fi
 
-docker buildx build -f ./Dockerfile \
+docker buildx build -f ./forward/Dockerfile \
 		--progress=plain \
 		--build-arg VERSION="$VERSION" \
 		--label "build-tag=build-artifact" \
