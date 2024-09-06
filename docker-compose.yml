@@ -20,7 +20,7 @@ services:
           "max_left_position": 52,
           "pin":  15,
           "frequency": 400,
-          "topic": "neurons/test-steering/out"
+          "topic": "neurons/test/out"
         }
     networks:
       app:
