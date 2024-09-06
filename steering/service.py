@@ -69,6 +69,7 @@ def on_message(client, userdata, msg):
 
     if msg.topic == topic:
         value = float(msg.payload.decode())
+        print(f"signal: {value}")
         set_signal(value)
     else:
         print("Unknown command")
