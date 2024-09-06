@@ -1,5 +1,7 @@
 FROM nvcr.io/nvidia/l4t-base:r32.4.3 AS base
 
+ENV PYTHONUNBUFFERED=1
+
 RUN apt-get update
 RUN apt-get install -y python3-pip
 
