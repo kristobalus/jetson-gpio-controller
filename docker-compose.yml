@@ -12,7 +12,6 @@ services:
       dockerfile: ./steering/Dockerfile
     privileged: true
     environment:
-      PYTHONUNBUFFERED: 1
       MQTT_BROKER: "mqtt://mqtt-broker:1883"
       CONFIGURATION: |
         {
