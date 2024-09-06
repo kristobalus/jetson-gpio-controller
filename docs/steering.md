@@ -45,3 +45,8 @@ e.g. in activeConfig
 }
 ```
 
+```text
+cz bump
+bash build-steering.sh
+```
+
