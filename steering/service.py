@@ -30,6 +30,8 @@ parsed_url = urlparse(MQTT_BROKER)
 MQTT_BROKER_HOST = parsed_url.hostname
 MQTT_BROKER_PORT = int(parsed_url.port)
 
+print(f"connecting to mqtt broker at {MQTT_BROKER_HOST}:{MQTT_BROKER_PORT}")
+
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(pin, GPIO.OUT)
 pwm = GPIO.PWM(pin, frequency)
@@ -72,8 +74,6 @@ def on_message(client, userdata, msg):
     else:
         print("Unknown command")
 
-
-print(f"connecting to mqtt broker at {MQTT_BROKER_HOST}:{MQTT_BROKER_PORT}")
 
 # MQTT client setup
 client = mqtt.Client(reconnect_on_failure=True)
