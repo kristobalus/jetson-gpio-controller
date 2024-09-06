@@ -78,18 +78,15 @@ def on_message(client, userdata, msg):
 
 
 def backward():
-    global current_state
     go_stop(0.1)
     go_backward(0.1)
     go_stop(0.1)
     go_backward(1)
     go_forward(0.1)
-    current_state = 0.5
+
 
 def forward():
-    global current_state
     go_forward(1)
-    current_state = 0.5
 
 
 def set_signal(value):
@@ -104,8 +101,7 @@ def set_signal(value):
         forward()
     elif value <= 0.49:
         # backward motion
-        if current_state > 0.5:
-            backward()
+        backward()
     elif value == 0.5:
         # brake
         go_stop(0.1)
