@@ -73,6 +73,9 @@ def on_message(client, userdata, msg):
         print("Unknown command")
 
 
+print(MQTT_BROKER_HOST)
+print(MQTT_BROKER_PORT)
+
 # MQTT client setup
 client = mqtt.Client(reconnect_on_failure=True)
 client.on_connect = on_connect
