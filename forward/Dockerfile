@@ -7,7 +7,7 @@ RUN apt-get install -y python3-pip
 RUN pip3 install pyserial paho-mqtt Jetson.GPIO
 
 # Copy the service code to /opt
-COPY service.py /opt/service.py
+COPY forward/service.py /opt/service.py
 
 # Set the working directory
 WORKDIR /opt
