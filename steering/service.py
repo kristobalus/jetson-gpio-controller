@@ -45,18 +45,18 @@ def set_signal(value):
     if delta < 0:
         # go left
         dynamic_range = abs(neutral_position - max_left_position)
-        duty_cycle = neutral_position - abs(delta - 0.5) / 0.5 * dynamic_range
-        pwm.ChangeDutyCycle(duty_cycle)
+        duty_cycle = neutral_position - (abs(delta - 0.5) / 0.5) * dynamic_range
+        # pwm.ChangeDutyCycle(duty_cycle)
         print(f"going left, dynamic_range: {dynamic_range}, duty_cycle: {duty_cycle}")
     elif delta > 0:
         # go right
         dynamic_range = abs(neutral_position - max_right_position)
         duty_cycle = neutral_position + abs(delta - 0.5) / 0.5 * dynamic_range
-        pwm.ChangeDutyCycle(duty_cycle)
+        # pwm.ChangeDutyCycle(duty_cycle)
         print(f"going right, dynamic_range: {dynamic_range}, duty_cycle: {duty_cycle}")
     elif delta == 0:
         # go neutral
-        pwm.ChangeDutyCycle(neutral_position)
+        # pwm.ChangeDutyCycle(neutral_position)
         print(f"going straight")
 
 
