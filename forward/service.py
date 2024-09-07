@@ -39,6 +39,8 @@ full_stop = int(config.get("full_stop", 53))
 topic = config.get('topic')
 use_dynamic_range = bool(config.get('use_dynamic_range', False))
 
+log.debug(f"Using dynamic range: {use_dynamic_range}")
+
 pin = int(config.get("pin", 32))
 frequency = int(config.get("frequency", 400))
 
@@ -99,7 +101,7 @@ def motion_thread_handler():
             break
         pwm.ChangeDutyCycle(current_duty_cycle)  # Simulate PWM action
         time.sleep(0.001)  # prevent high CPU overusage
-    if motion_duty_cycle == full_backward:
+    if motion_duty_cycle < full_stop:
         go_forward(0.1)
         go_stop(0.1)
         log.debug(f"for backward motion add forward and stop to prevent PWM controller locking")
@@ -176,13 +178,13 @@ def control_signal_handler(value):
     log.debug(f"previous signal value={prev_value}")
 
     if value > 0.5:
+        log.debug("motion forward requested")
         # forward motion
         if prev_value > 0.5:
             # keep motion
             start_motion_thread()
         if prev_value < 0.5:
             stop_motion_thread()
-            go_forward(0.1)
             with motion_duty_cycle_lock:
                 motion_duty_cycle = dynamic_range_forward(value)
             with motion_time_lock:
@@ -195,6 +197,7 @@ def control_signal_handler(value):
             start_motion_thread()
 
     if value == 0.5:
+        log.debug("full stop requested")
         # full stop
         if prev_value < 0.5:
             stop_motion_thread()
@@ -216,6 +219,7 @@ def control_signal_handler(value):
 
     if value < 0.5:
         # backward motion
+        log.debug("motion backward requested")
         if prev_value < 0.5:
             start_motion_thread()
             log.debug("keep backward motion, no change required")
