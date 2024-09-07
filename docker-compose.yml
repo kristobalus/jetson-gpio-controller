@@ -36,6 +36,7 @@ services:
       MQTT_BROKER: "mqtt://mqtt-broker:1883"
       CONFIGURATION: |
         {
+          "use_dynamic_range": true,
           "full_forward":  55,
           "full_backward": 49,
           "full_stop": 53,
