@@ -32,6 +32,7 @@ services:
       dockerfile: ./forward/Dockerfile
     privileged: true
     environment:
+      LOG_LEVEL: "debug"
       MQTT_BROKER: "mqtt://mqtt-broker:1883"
       CONFIGURATION: |
         {
