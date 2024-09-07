@@ -37,7 +37,7 @@ services:
       CONFIGURATION: |
         {
           "full_forward":  55,
-          "full_backward": 51,
+          "full_backward": 49,
           "full_stop": 53,
           "pin":  32,
           "frequency": 400,
