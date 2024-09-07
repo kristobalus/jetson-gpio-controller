@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import threading
 import time
@@ -7,6 +8,19 @@ from threading import Thread
 
 import Jetson.GPIO as GPIO
 import paho.mqtt.client as mqtt
+
+import logging as log
+
+# configure logging
+# get log level from environment variable
+log_level = os.getenv('LOG_LEVEL', 'INFO')
+log.basicConfig(
+    level=getattr(log, log_level.upper(), log.INFO),
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        log.StreamHandler()
+    ]
+)
 
 # Get the configuration JSON from the environment variable
 config_json = os.getenv("CONFIGURATION")
@@ -51,12 +65,14 @@ def go_stop(duration):
     start_time = time.time()
     while time.time() - start_time < duration:
         pwm.ChangeDutyCycle(full_stop)
+    log.debug(f"go_stop completed")
 
 
 def go_forward(duration):
     start_time = time.time()
     while time.time() - start_time < duration:
         pwm.ChangeDutyCycle(full_forward)
+    log.debug(f"go_forward completed")
 
 
 def go_backward(duration):
@@ -64,9 +80,11 @@ def go_backward(duration):
     start_time = time.time()
     while time.time() - start_time < duration:
         pwm.ChangeDutyCycle(full_backward)
+    log.debug(f"go_backward completed")
 
 
 def motion_thread_handler():
+    log.debug(f"thread running...")
     start_time = time.time()
     while True:
         with motion_time_lock:
@@ -84,36 +102,39 @@ def start_motion_thread():
     if motion_thread is None or motion_thread.is_alive() is False:
         motion_thread = Thread(target=motion_thread_handler)
         motion_thread.start()
+        log.debug(f"motion thread started")
     else:
         with motion_time_lock:
             motion_time = motion_time + motion_interval
+        log.debug(f"motion time extended {motion_time}")
 
 
 def stop_motion_thread():
     global motion_time
-    with motion_time_lock:
-        motion_time = 0
-    if motion_thread:
+    if motion_thread and motion_thread.is_alive():
+        with motion_time_lock:
+            motion_time = 0
         motion_thread.join()
+        log.debug(f"motion thread stopped")
 
 
 # MQTT event handlers
 def on_connect(client, userdata, flags, rc):
-    print("MQTT connected with result code " + str(rc))
+    log.debug("MQTT connected with result code " + str(rc))
     # Subscribe to a topic
     client.subscribe(topic)
-    print(f"MQTT subscribed to {topic}")
+    log.debug(f"MQTT subscribed to {topic}")
 
 
 def on_message(client, userdata, msg):
-    print("MQTT message received on topic " + msg.topic + ": " + str(msg.payload))
+    log.debug("MQTT message received on topic " + msg.topic + ": " + str(msg.payload))
 
     if msg.topic == topic:
         value = float(msg.payload.decode())
-        print(f"signal: {value}")
+        log.debug(f"signal: {value}")
         control_signal_handler(value)
     else:
-        print("Unknown topic")
+        log.debug("Unknown topic")
 
 
 def control_signal_handler(value):
@@ -121,8 +142,8 @@ def control_signal_handler(value):
     global prev_value
     global motion_duty_cycle
 
-    print(f"new signal value={value}")
-    print(f"previous signal value={prev_value}")
+    log.debug(f"new signal value={value}")
+    log.debug(f"previous signal value={prev_value}")
 
     if value > 0.5:
 
@@ -178,9 +199,8 @@ def control_signal_handler(value):
             start_motion_thread()
 
     prev_value = value
-    print(f"new motion_duty_cycle={motion_duty_cycle}")
-    print(f"new motion time={motion_time}")
-
+    log.debug(f"new motion_duty_cycle={motion_duty_cycle}")
+    log.debug(f"new motion time={motion_time}")
 
 
 # MQTT client setup
