@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # Path to the .cz.toml file
 CZ_CONFIG_FILE=".cz.toml"
 
