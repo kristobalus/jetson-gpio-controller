@@ -58,6 +58,7 @@ motion_duty_cycle = full_stop
 motion_time = 0
 motion_time_lock = threading.Lock()  # Lock for thread-safe access
 motion_duty_cycle_lock = threading.Lock()  # Lock for thread-safe access
+prev_value_lock = threading.Lock()  # Lock for thread-safe access
 motion_thread: Optional[Thread] = None
 
 
@@ -86,6 +87,7 @@ def go_backward(duration):
 def motion_thread_handler():
     log.debug(f"thread start")
     start_time = time.time()
+    global prev_value
     while True:
         with motion_time_lock:
             current_motion_time = motion_time  # Safely read the global motion_time
@@ -96,6 +98,8 @@ def motion_thread_handler():
     if motion_duty_cycle == full_backward:
         go_forward(0.1)
         go_stop(0.1)
+        with prev_value_lock:
+            prev_value = full_stop
         log.debug(f"for backward motion add forward and stop to prevent PWM controller locking")
     log.debug(f"thread end")
 
@@ -109,6 +113,8 @@ def start_motion_thread():
             motion_time = motion_time + motion_interval
         log.debug(f"motion time extended {motion_time}")
     else:
+        with motion_time_lock:
+            motion_time = motion_interval
         motion_thread = Thread(target=motion_thread_handler)
         motion_thread.start()
         log.debug(f"motion thread started")
