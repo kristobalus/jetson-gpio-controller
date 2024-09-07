@@ -158,7 +158,11 @@ def on_message(client, userdata, msg):
 def dynamic_range_forward(value):
     if use_dynamic_range is False:
         return full_forward
-    delta = abs(value - 0.5)/0.5 * abs(full_forward - full_stop)
+    range_ratio = abs(value - 0.5)/0.5
+    dynamic_range = abs(full_forward - full_stop)
+    log.debug(f"dynamic range: {dynamic_range}")
+    log.debug(f"range ratio: {range_ratio}")
+    delta = range_ratio * dynamic_range
     return full_stop + delta
 
 
