@@ -99,14 +99,14 @@ def motion_thread_handler():
 def start_motion_thread():
     global motion_thread
     global motion_time
-    if motion_thread is None or motion_thread.is_alive() is False:
-        motion_thread = Thread(target=motion_thread_handler)
-        motion_thread.start()
-        log.debug(f"motion thread started")
-    else:
+    if motion_thread and motion_thread.is_alive():
         with motion_time_lock:
             motion_time = motion_time + motion_interval
         log.debug(f"motion time extended {motion_time}")
+    else:
+        motion_thread = Thread(target=motion_thread_handler)
+        motion_thread.start()
+        log.debug(f"motion thread started")
 
 
 def stop_motion_thread():
