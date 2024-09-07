@@ -151,9 +151,12 @@ def on_message(client, userdata, msg):
     log.debug("MQTT message received on topic " + msg.topic + ": " + str(msg.payload))
 
     if msg.topic == topic:
-        value = float(msg.payload.decode())
-        log.debug(f"signal: {value}")
-        control_signal_handler(value)
+        try:
+            value = float(msg.payload.decode())
+            log.debug(f"signal: {value}")
+            control_signal_handler(value)
+        except Exception as e:
+            log.error(e)
     else:
         log.debug("Unknown topic")
 
