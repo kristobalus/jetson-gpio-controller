@@ -111,15 +111,19 @@ def on_message(client, userdata, msg):
     if msg.topic == topic:
         value = float(msg.payload.decode())
         print(f"signal: {value}")
-        set_signal(value)
+        control_signal_handler(value)
     else:
         print("Unknown topic")
 
 
-def set_signal(value):
+def control_signal_handler(value):
     global motion_time
     global prev_value
     global motion_duty_cycle
+
+    print(f"new signal value={value}")
+    print(f"previous signal value={prev_value}")
+
     if value > 0.5:
 
         if prev_value > 0.5:
@@ -174,6 +178,9 @@ def set_signal(value):
             start_motion_thread()
 
     prev_value = value
+    print(f"new motion_duty_cycle={motion_duty_cycle}")
+    print(f"new motion time={motion_time}")
+
 
 
 # MQTT client setup
