@@ -165,7 +165,7 @@ def dynamic_range_forward(value):
     if use_dynamic_range is False:
         return full_forward
     if value == 0.5:
-        return full_stop
+        raise Exception(f"Value should not be equal to full_stop: {value}")
     range_ratio = abs(value - 0.5)/0.5
     dynamic_range = abs(full_forward - full_stop)
     delta = range_ratio * dynamic_range
@@ -177,9 +177,9 @@ def dynamic_range_forward(value):
 
 def dynamic_range_backward(value):
     if use_dynamic_range is False:
-        return full_forward
+        return full_backward
     if value == 0.5:
-        return full_stop
+        raise Exception(f"Value should not be equal to full_stop: {value}")
     range_ratio = abs(value - 0.5)/0.5
     dynamic_range = abs(full_backward - full_stop)
     delta = range_ratio * dynamic_range
@@ -200,39 +200,26 @@ def control_signal_handler(value):
     if value > 0.5:
         log.debug("motion forward requested")
         # forward motion
+        with motion_duty_cycle_lock:
+            motion_duty_cycle = dynamic_range_forward(value)
         if prev_value > 0.5:
             # keep motion
             start_motion_thread()
-        if prev_value < 0.5:
+        if prev_value <= 0.5:
             stop_motion_thread()
-            with motion_duty_cycle_lock:
-                motion_duty_cycle = dynamic_range_forward(value)
-            with motion_time_lock:
-                motion_time = motion_interval
-        if prev_value == 0.5:
-            with motion_duty_cycle_lock:
-                motion_duty_cycle = dynamic_range_forward(value)
-            with motion_time_lock:
-                motion_time = motion_interval
             start_motion_thread()
 
     if value == 0.5:
         log.debug("full stop requested")
         # full stop
+        with motion_duty_cycle_lock:
+            motion_duty_cycle = full_stop
         if prev_value < 0.5:
             stop_motion_thread()
             go_forward(0.1)
-            with motion_duty_cycle_lock:
-                motion_duty_cycle = full_stop
-            with motion_time_lock:
-                motion_time = motion_interval
             start_motion_thread()
         if prev_value > 0.5:
             stop_motion_thread()
-            with motion_duty_cycle_lock:
-                motion_duty_cycle = full_stop
-            with motion_time_lock:
-                motion_time = motion_interval
             start_motion_thread()
         if prev_value == 0.5:
             log.debug("no change required")
@@ -240,18 +227,18 @@ def control_signal_handler(value):
     if value < 0.5:
         # backward motion
         log.debug("motion backward requested")
+        with motion_duty_cycle_lock:
+            motion_duty_cycle = dynamic_range_backward(value)
         if prev_value < 0.5:
             start_motion_thread()
             log.debug("keep backward motion, no change required")
         if prev_value == 0.5 or prev_value > 0.5:
             stop_motion_thread()
+            # do not remove, this is start sequence for backward motion
+            # required for actual motion
             go_stop(0.1)
             go_backward(0.1)
             go_stop(0.1)
-            with motion_duty_cycle_lock:
-                motion_duty_cycle = dynamic_range_backward(value)
-            with motion_time_lock:
-                motion_time = motion_interval
             start_motion_thread()
 
     prev_value = value
