@@ -66,14 +66,14 @@ def go_stop(duration):
     start_time = time.time()
     while time.time() - start_time < duration:
         pwm.ChangeDutyCycle(full_stop)
-    log.debug(f"go_stop completed")
+    log.debug(f"go_stop completed for {duration} sec")
 
 
 def go_forward(duration):
     start_time = time.time()
     while time.time() - start_time < duration:
         pwm.ChangeDutyCycle(full_forward)
-    log.debug(f"go_forward completed")
+    log.debug(f"go_forward completed for {duration} secs")
 
 
 def go_backward(duration):
@@ -81,7 +81,7 @@ def go_backward(duration):
     start_time = time.time()
     while time.time() - start_time < duration:
         pwm.ChangeDutyCycle(full_backward)
-    log.debug(f"go_backward completed")
+    log.debug(f"go_backward completed for {duration} secs")
 
 
 def motion_thread_handler():
@@ -194,6 +194,7 @@ def control_signal_handler(value):
         # backward motion
         if prev_value < 0.5:
             start_motion_thread()
+            log.debug("keep backward motion, no change required")
         if prev_value == 0.5 or prev_value > 0.5:
             stop_motion_thread()
             go_stop(0.1)
