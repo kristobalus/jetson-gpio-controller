@@ -22,6 +22,7 @@ log.basicConfig(
     ]
 )
 
+
 # Get the configuration JSON from the environment variable
 config_json = os.getenv("CONFIGURATION")
 
@@ -36,6 +37,7 @@ full_forward = int(config.get("full_forward", 55))
 full_backward = int(config.get("full_backward", 40))
 full_stop = int(config.get("full_stop", 53))
 topic = config.get('topic')
+use_dynamic_range = bool(config.get('use_dynamic_range', False))
 
 pin = int(config.get("pin", 32))
 frequency = int(config.get("frequency", 400))
@@ -89,11 +91,13 @@ def motion_thread_handler():
     start_time = time.time()
     global prev_value
     while True:
+        with motion_duty_cycle_lock:
+            current_duty_cycle = motion_duty_cycle  # Safely read the global motion_time
         with motion_time_lock:
             current_motion_time = motion_time  # Safely read the global motion_time
         if time.time() - start_time >= current_motion_time:
             break
-        pwm.ChangeDutyCycle(motion_duty_cycle)  # Simulate PWM action
+        pwm.ChangeDutyCycle(current_duty_cycle)  # Simulate PWM action
         time.sleep(0.001)  # prevent high CPU overusage
     if motion_duty_cycle == full_backward:
         go_forward(0.1)
@@ -149,6 +153,20 @@ def on_message(client, userdata, msg):
         log.debug("Unknown topic")
 
 
+def dynamic_range_forward(value):
+    if use_dynamic_range is False:
+        return full_forward
+    delta = abs(value - 0.5)/0.5 * abs(full_forward - full_stop)
+    return full_stop + delta
+
+
+def dynamic_range_backward(value):
+    if use_dynamic_range is False:
+        return full_backward
+    delta = abs(value - 0.5) / 0.5 * abs(full_stop - full_backward)
+    return full_stop - delta
+
+
 def control_signal_handler(value):
     global motion_time
     global prev_value
@@ -158,27 +176,26 @@ def control_signal_handler(value):
     log.debug(f"previous signal value={prev_value}")
 
     if value > 0.5:
-
+        # forward motion
         if prev_value > 0.5:
             # keep motion
             start_motion_thread()
-
         if prev_value < 0.5:
             stop_motion_thread()
             go_forward(0.1)
             with motion_duty_cycle_lock:
-                motion_duty_cycle = full_forward
+                motion_duty_cycle = dynamic_range_forward(value)
             with motion_time_lock:
                 motion_time = motion_interval
-
         if prev_value == 0.5:
             with motion_duty_cycle_lock:
-                motion_duty_cycle = full_forward
+                motion_duty_cycle = dynamic_range_forward(value)
             with motion_time_lock:
                 motion_time = motion_interval
             start_motion_thread()
 
     if value == 0.5:
+        # full stop
         if prev_value < 0.5:
             stop_motion_thread()
             go_forward(0.1)
@@ -208,7 +225,7 @@ def control_signal_handler(value):
             go_backward(0.1)
             go_stop(0.1)
             with motion_duty_cycle_lock:
-                motion_duty_cycle = full_backward
+                motion_duty_cycle = dynamic_range_backward(value)
             with motion_time_lock:
                 motion_time = motion_interval
             start_motion_thread()
