@@ -74,10 +74,10 @@ def set_signal(value):
 
 # MQTT event handlers
 def on_connect(client, userdata, flags, rc):
-    log.debug("MQTT connected with result code: " + str(rc))
+    log.info("MQTT connected with result code: " + str(rc))
     # Subscribe to a topic
     client.subscribe(topic)
-    log.debug(f"MQTT subscribed to {topic}")
+    log.info(f"MQTT subscribed to {topic}")
 
 
 def on_message(client, userdata, msg):
