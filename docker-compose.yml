@@ -1,7 +1,7 @@
 
 networks:
   app:
-#    external: true
+    external: true
     name: "flux-network"
 
 services:
