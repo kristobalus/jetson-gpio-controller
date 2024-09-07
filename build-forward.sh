@@ -9,7 +9,7 @@ echo "VERSION=$VERSION"
 
 # Read the version from package.json
 BRANCH=$(git branch --show-current)
-IMAGE=${IMAGE:-"ghcr.io/flux-agi/flux-cart-control-forward-backward"}
+IMAGE=${IMAGE:-"ghcr.io/flux-agi/flux-cart-control-forward"}
 echo "building image $IMAGE:$VERSION using buildx..."
 
 # docker buildx create --use --name buildx_instance --driver docker-container --bootstrap
