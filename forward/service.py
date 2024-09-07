@@ -84,7 +84,7 @@ def go_backward(duration):
 
 
 def motion_thread_handler():
-    log.debug(f"thread running...")
+    log.debug(f"thread start")
     start_time = time.time()
     while True:
         with motion_time_lock:
@@ -93,6 +93,7 @@ def motion_thread_handler():
             break
         pwm.ChangeDutyCycle(motion_duty_cycle)  # Simulate PWM action
         # time.sleep(0.001)  # prevent high CPU overusage
+    log.debug(f"thread end")
 
 
 # Function to start go_forward in a thread
