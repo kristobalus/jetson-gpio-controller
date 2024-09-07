@@ -92,7 +92,7 @@ def motion_thread_handler():
         if time.time() - start_time >= current_motion_time:
             break
         pwm.ChangeDutyCycle(motion_duty_cycle)  # Simulate PWM action
-        # time.sleep(0.001)  # prevent high CPU overusage
+        time.sleep(0.001)  # prevent high CPU overusage
     log.debug(f"thread end")
 
 
