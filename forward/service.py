@@ -95,7 +95,8 @@ def motion_thread_handler():
         time.sleep(0.001)  # prevent high CPU overusage
     if motion_duty_cycle == full_backward:
         go_forward(0.1)
-        log.debug(f"for backward motion add forward switch to prevent PWM controller locking")
+        go_stop(0.1)
+        log.debug(f"for backward motion add forward and stop to prevent PWM controller locking")
     log.debug(f"thread end")
 
 
