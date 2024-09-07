@@ -5,6 +5,17 @@ from urllib.parse import urlparse
 import Jetson.GPIO as GPIO
 import paho.mqtt.client as mqtt
 
+# configure logging
+# get log level from environment variable
+import logging as log
+log_level = os.getenv('LOG_LEVEL', 'INFO')
+log.basicConfig(
+    level=getattr(log, log_level.upper(), log.INFO),
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        log.StreamHandler()
+    ]
+)
 
 # Get the configuration JSON from the environment variable
 config_json = os.getenv('CONFIGURATION')
@@ -42,45 +53,45 @@ def set_signal(value):
     """
     middle = 0.5
     delta = value - middle
-    print(f"delta: {delta}")
+    log.debug(f"delta: {delta}")
     if delta < 0:
         # go left
         dynamic_range = abs(neutral_position - max_left_position)
         duty_cycle = neutral_position - abs(delta) / middle * dynamic_range
         pwm.ChangeDutyCycle(duty_cycle)
-        print(f"going left, dynamic_range: {dynamic_range}, duty_cycle: {duty_cycle}")
+        log.debug(f"going left, dynamic_range: {dynamic_range}, duty_cycle: {duty_cycle}")
     elif delta > 0:
         # go right
         dynamic_range = abs(neutral_position - max_right_position)
         duty_cycle = neutral_position + abs(delta) / middle * dynamic_range
         pwm.ChangeDutyCycle(duty_cycle)
-        print(f"going right, dynamic_range: {dynamic_range}, duty_cycle: {duty_cycle}")
+        log.debug(f"going right, dynamic_range: {dynamic_range}, duty_cycle: {duty_cycle}")
     elif delta == 0:
         # go neutral
         pwm.ChangeDutyCycle(neutral_position)
-        print(f"going straight")
+        log.debug(f"going straight")
 
 
 # MQTT event handlers
 def on_connect(client, userdata, flags, rc):
-    print("MQTT connected with result code: " + str(rc))
+    log.debug("MQTT connected with result code: " + str(rc))
     # Subscribe to a topic
     client.subscribe(topic)
-    print(f"MQTT subscribed to {topic}")
+    log.debug(f"MQTT subscribed to {topic}")
 
 
 def on_message(client, userdata, msg):
-    print("Message received on topic " + msg.topic + ": " + str(msg.payload))
+    log.debug("Message received on topic " + msg.topic + ": " + str(msg.payload))
 
     if msg.topic == topic:
         value = float(msg.payload.decode())
-        print(f"signal: {value}")
+        log.debug(f"signal: {value}")
         set_signal(value)
     else:
-        print("Unknown topic")
+        log.debug("Unknown topic")
 
 
-print(f"MQTT connecting at {MQTT_BROKER_HOST}:{MQTT_BROKER_PORT}")
+log.debug(f"MQTT connecting at {MQTT_BROKER_HOST}:{MQTT_BROKER_PORT}")
 
 # MQTT client setup
 client = mqtt.Client(reconnect_on_failure=True)

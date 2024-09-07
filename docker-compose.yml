@@ -36,7 +36,7 @@ services:
       MQTT_BROKER: "mqtt://mqtt-broker:1883"
       CONFIGURATION: |
         {
-          "full_forward":  55,
+          "full_forward":  62,
           "full_backward": 40,
           "full_stop": 53,
           "pin":  32,
