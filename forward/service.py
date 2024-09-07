@@ -58,7 +58,7 @@ motion_duty_cycle = full_stop
 motion_time = 0
 motion_time_lock = threading.Lock()  # Lock for thread-safe access
 motion_duty_cycle_lock = threading.Lock()  # Lock for thread-safe access
-motion_thread: Thread
+motion_thread = None
 
 
 def go_stop(duration):
