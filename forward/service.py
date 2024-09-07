@@ -99,9 +99,9 @@ def motion_thread_handler():
         go_forward(0.1)
         go_stop(0.1)
         log.debug(f"for backward motion add forward and stop to prevent PWM controller locking")
-        with prev_value_lock:
-            prev_value = full_stop
-        log.debug(f"now full stop")
+    with prev_value_lock:
+        prev_value = full_stop
+    log.debug(f"now full stop")
     log.debug(f"thread end")
 
 
