@@ -54,7 +54,7 @@ pwm = GPIO.PWM(pin, frequency)
 pwm.start(full_stop)
 
 prev_value = 0.5
-motion_interval = 10
+motion_interval = int(config.get("motion_interval", 10))
 motion_duty_cycle = full_stop
 motion_time = 0
 motion_time_lock = threading.Lock()  # Lock for thread-safe access
