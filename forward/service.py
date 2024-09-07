@@ -8,6 +8,7 @@ from typing import Optional
 
 import Jetson.GPIO as GPIO
 import paho.mqtt.client as mqtt
+import math
 
 import logging as log
 
@@ -158,19 +159,29 @@ def on_message(client, userdata, msg):
 def dynamic_range_forward(value):
     if use_dynamic_range is False:
         return full_forward
+    if value == 0.5:
+        return full_stop
     range_ratio = abs(value - 0.5)/0.5
     dynamic_range = abs(full_forward - full_stop)
-    log.debug(f"dynamic range: {dynamic_range}")
-    log.debug(f"range ratio: {range_ratio}")
     delta = range_ratio * dynamic_range
-    return full_stop + delta
+    result = full_stop + delta
+    result = min(math.ceil(result), full_forward)
+    log.debug(f"dynamic_range: {dynamic_range}, range_ratio={range_ratio}, result={result}")
+    return result
 
 
 def dynamic_range_backward(value):
     if use_dynamic_range is False:
-        return full_backward
-    delta = abs(value - 0.5) / 0.5 * abs(full_stop - full_backward)
-    return full_stop - delta
+        return full_forward
+    if value == 0.5:
+        return full_stop
+    range_ratio = abs(value - 0.5)/0.5
+    dynamic_range = abs(full_backward - full_stop)
+    delta = range_ratio * dynamic_range
+    result = full_stop - delta
+    result = max(math.floor(result), full_backward)
+    log.debug(f"dynamic_range: {dynamic_range}, range_ratio={range_ratio}, result={result}")
+    return result
 
 
 def control_signal_handler(value):
