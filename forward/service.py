@@ -5,6 +5,7 @@ import threading
 import time
 from urllib.parse import urlparse
 from threading import Thread
+from typing import Optional
 
 import Jetson.GPIO as GPIO
 import paho.mqtt.client as mqtt
@@ -58,7 +59,7 @@ motion_duty_cycle = full_stop
 motion_time = 0
 motion_time_lock = threading.Lock()  # Lock for thread-safe access
 motion_duty_cycle_lock = threading.Lock()  # Lock for thread-safe access
-motion_thread = None
+motion_thread: Optional[Thread] = None
 
 
 def go_stop(duration):
@@ -93,6 +94,8 @@ def motion_thread_handler():
             break
         pwm.ChangeDutyCycle(motion_duty_cycle)  # Simulate PWM action
         time.sleep(0.001)  # prevent high CPU overusage
+    if motion_duty_cycle == full_backward:
+        go_forward(0.1)
     log.debug(f"thread end")
 
 
