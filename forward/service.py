@@ -182,6 +182,8 @@ def control_signal_handler(value):
             with motion_time_lock:
                 motion_time = motion_interval
             start_motion_thread()
+        if prev_value == 0.5:
+            log.debug("no change required")
 
     if value < 0.5:
         # backward motion
