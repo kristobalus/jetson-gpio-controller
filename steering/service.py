@@ -8,6 +8,7 @@ import paho.mqtt.client as mqtt
 # configure logging
 # get log level from environment variable
 import logging as log
+
 log_level = os.getenv('LOG_LEVEL', 'INFO')
 log.basicConfig(
     level=getattr(log, log_level.upper(), log.INFO),
@@ -33,7 +34,6 @@ max_left_position = int(config.get('max_left_position', 50))
 pin = int(config.get('pin', 15))
 frequency = int(config.get('frequency', 400))
 topic = config.get('topic')
-
 
 # MQTT Configuration
 MQTT_BROKER = os.getenv('MQTT_BROKER')
@@ -81,11 +81,11 @@ def on_connect(client, userdata, flags, rc):
 
 
 def on_message(client, userdata, msg):
-    log.debug("Message received on topic " + msg.topic + ": " + str(msg.payload))
+    log.debug("MQTT message received on topic " + msg.topic + ": " + str(msg.payload))
 
     if msg.topic == topic:
         value = float(msg.payload.decode())
-        log.debug(f"signal: {value}")
+        log.debug("MQTT signal received: %s", {"signal": value})
         set_signal(value)
     else:
         log.debug("Unknown topic")
