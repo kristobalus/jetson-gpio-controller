@@ -1,0 +1,12 @@
+networks:
+  app:
+    name: "flux-network"
+    attachable: true
+
+services:
+  mqtt-broker:
+    image: nanomq/nanomq:0.6.6-slim
+    networks:
+      app:
+    ports:
+      - "0.0.0.0:1883:1883"

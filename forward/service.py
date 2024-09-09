@@ -9,6 +9,7 @@ from typing import Optional
 import Jetson.GPIO as GPIO
 import paho.mqtt.client as mqtt
 import math
+from unittest.mock import MagicMock
 
 import logging as log
 
@@ -37,10 +38,14 @@ else:
 full_forward = int(config.get("full_forward", 55))
 full_backward = int(config.get("full_backward", 40))
 full_stop = int(config.get("full_stop", 53))
-topic = config.get('topic')
 use_dynamic_range = bool(config.get('use_dynamic_range', False))
+use_fake_device = bool(config.get('use_fake_device', False))
+topic = config.get('topic')
 
-log.debug(f"Using dynamic range: {use_dynamic_range}")
+if topic is None:
+    raise Exception("Should have topic defined")
+
+log.debug(f"Use dynamic range: {use_dynamic_range}")
 
 pin = int(config.get("pin", 32))
 frequency = int(config.get("frequency", 400))
@@ -51,11 +56,17 @@ parsed_url = urlparse(MQTT_BROKER)
 MQTT_BROKER_HOST = parsed_url.hostname
 MQTT_BROKER_PORT = int(parsed_url.port)
 
-GPIO.setmode(GPIO.BOARD)
-GPIO.setup(pin, GPIO.OUT)
+if use_fake_device:
+    def on_side_effect(duty_cycle):
+        log.debug(f"Fake PWM: duty cycle applied={duty_cycle}")
+    pwm = MagicMock()
+    pwm.ChangeDutyCycle = MagicMock(side_effect=on_side_effect)
+else:
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setup(pin, GPIO.OUT)
 
-pwm = GPIO.PWM(pin, frequency)
-pwm.start(full_stop)
+    pwm = GPIO.PWM(pin, frequency)
+    pwm.start(full_stop)
 
 prev_value = 0.5
 motion_interval = int(config.get("motion_interval", 10))

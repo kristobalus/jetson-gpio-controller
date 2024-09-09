@@ -4,10 +4,8 @@ from urllib.parse import urlparse
 
 import Jetson.GPIO as GPIO
 import paho.mqtt.client as mqtt
-
-# configure logging
-# get log level from environment variable
 import logging as log
+from unittest.mock import MagicMock
 
 log_level = os.getenv('LOG_LEVEL', 'INFO')
 log.basicConfig(
@@ -33,7 +31,11 @@ max_right_position = int(config.get('max_right_position', 70))
 max_left_position = int(config.get('max_left_position', 50))
 pin = int(config.get('pin', 15))
 frequency = int(config.get('frequency', 400))
+use_fake_device = bool(config.get('use_fake_device', False))
 topic = config.get('topic')
+
+if topic is None:
+    raise Exception("Should have topic defined")
 
 # MQTT Configuration
 MQTT_BROKER = os.getenv('MQTT_BROKER')
@@ -41,13 +43,19 @@ parsed_url = urlparse(MQTT_BROKER)
 MQTT_BROKER_HOST = parsed_url.hostname
 MQTT_BROKER_PORT = int(parsed_url.port)
 
-GPIO.setmode(GPIO.BOARD)
-GPIO.setup(pin, GPIO.OUT)
-pwm = GPIO.PWM(pin, frequency)
-pwm.start(neutral_position)
+if use_fake_device:
+    def on_side_effect(duty_cycle):
+        log.debug(f"Fake PWM: duty cycle applied={duty_cycle}")
+    pwm = MagicMock()
+    pwm.ChangeDutyCycle = MagicMock(side_effect=on_side_effect)
+else:
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setup(pin, GPIO.OUT)
+    pwm = GPIO.PWM(pin, frequency)
+    pwm.start(neutral_position)
 
 
-def set_signal(value):
+def apply_control_signal(value):
     """
     signal is sent by neuron network or by desktop application, range 0..1, 0.5 is the middle
     """
@@ -86,7 +94,7 @@ def on_message(client, userdata, msg):
     if msg.topic == topic:
         value = float(msg.payload.decode())
         log.debug("MQTT signal received: %s", {"signal": value})
-        set_signal(value)
+        apply_control_signal(value)
     else:
         log.debug("Unknown topic")
 

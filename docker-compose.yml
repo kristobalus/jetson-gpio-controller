@@ -15,6 +15,7 @@ services:
       MQTT_BROKER: "mqtt://mqtt-broker:1883"
       CONFIGURATION: |
         {
+          "use_fake_device": true,
           "neutral_position":  60,
           "max_right_position": 70,
           "max_left_position": 52,
@@ -36,6 +37,7 @@ services:
       MQTT_BROKER: "mqtt://mqtt-broker:1883"
       CONFIGURATION: |
         {
+          "use_fake_device": true,
           "use_dynamic_range": true,
           "full_forward":  57,
           "full_backward": 49,
