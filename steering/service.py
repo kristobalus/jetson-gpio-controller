@@ -88,15 +88,15 @@ def on_connect(client, userdata, flags, rc):
 
 
 def on_message(client, userdata, msg):
-    log.debug("MQTT message received on topic " + msg.topic + ": " + str(msg.payload))
+    log.debug("MQTT message received on topic " + msg.topic + ": " + str(msg.payload.decode()))
 
     if msg.topic == topic:
         try:
             arr = json.loads(msg.payload.decode())
             log.debug("MQTT control signal received: %s", arr)
-            apply_control_signal(arr[2])
+            apply_control_signal(arr[0])
         except Exception as e:
-            log.error("error on reading control value", e)
+            log.error(e)
     else:
         log.debug("Unknown topic")
 

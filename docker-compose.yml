@@ -12,6 +12,7 @@ services:
       dockerfile: ./steering/Dockerfile
     privileged: true
     environment:
+      LOG_LEVEL: "debug"
       MQTT_BROKER: "mqtt://mqtt-broker:1883"
       CONFIGURATION: |
         {
@@ -21,7 +22,7 @@ services:
           "max_left_position": 52,
           "pin":  15,
           "frequency": 400,
-          "topic": "neurons/test-steering/out"
+          "topic": "neurons/1/out"
         }
     networks:
       app:
@@ -44,7 +45,7 @@ services:
           "full_stop": 53,
           "pin":  32,
           "frequency": 400,
-          "topic": "neurons/test-forward/out"
+          "topic": "neurons/2/out"
         }
     networks:
       app:
