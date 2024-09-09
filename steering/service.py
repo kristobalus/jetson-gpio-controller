@@ -1,8 +1,6 @@
 import json
 import os
 from urllib.parse import urlparse
-
-import Jetson.GPIO as GPIO
 import paho.mqtt.client as mqtt
 import logging as log
 from unittest.mock import MagicMock
@@ -49,6 +47,7 @@ if use_fake_device:
     pwm = MagicMock()
     pwm.ChangeDutyCycle = MagicMock(side_effect=on_side_effect)
 else:
+    import Jetson.GPIO as GPIO
     GPIO.setmode(GPIO.BOARD)
     GPIO.setup(pin, GPIO.OUT)
     pwm = GPIO.PWM(pin, frequency)
@@ -92,9 +91,12 @@ def on_message(client, userdata, msg):
     log.debug("MQTT message received on topic " + msg.topic + ": " + str(msg.payload))
 
     if msg.topic == topic:
-        value = float(msg.payload.decode())
-        log.debug("MQTT signal received: %s", {"signal": value})
-        apply_control_signal(value)
+        try:
+            arr = json.loads(msg.payload.decode())
+            log.debug("MQTT control signal received: %s", arr)
+            apply_control_signal(arr[2])
+        except Exception as e:
+            log.error("error on reading control value", e)
     else:
         log.debug("Unknown topic")
 

@@ -5,12 +5,9 @@ import time
 from urllib.parse import urlparse
 from threading import Thread
 from typing import Optional
-
-import Jetson.GPIO as GPIO
 import paho.mqtt.client as mqtt
 import math
 from unittest.mock import MagicMock
-
 import logging as log
 
 # configure logging
@@ -23,7 +20,6 @@ log.basicConfig(
         log.StreamHandler()
     ]
 )
-
 
 # Get the configuration JSON from the environment variable
 config_json = os.getenv("CONFIGURATION")
@@ -59,9 +55,13 @@ MQTT_BROKER_PORT = int(parsed_url.port)
 if use_fake_device:
     def on_side_effect(duty_cycle):
         log.debug(f"Fake PWM: duty cycle applied={duty_cycle}")
+
+
     pwm = MagicMock()
     pwm.ChangeDutyCycle = MagicMock(side_effect=on_side_effect)
 else:
+    import Jetson.GPIO as GPIO
+
     GPIO.setmode(GPIO.BOARD)
     GPIO.setup(pin, GPIO.OUT)
 
@@ -164,9 +164,9 @@ def on_message(client, userdata, msg):
 
     if msg.topic == topic:
         try:
-            value = float(msg.payload.decode())
-            log.debug(f"signal: {value}")
-            control_signal_handler(value)
+            arr = json.loads(msg.payload.decode())
+            log.debug("MQTT control signal received %s", arr)
+            apply_control_signal(arr[2])
         except Exception as e:
             log.error(e)
     else:
@@ -178,7 +178,7 @@ def dynamic_range_forward(value):
         return full_forward
     if value == 0.5:
         raise Exception(f"Value should not be equal to full_stop: {value}")
-    range_ratio = abs(value - 0.5)/0.5
+    range_ratio = abs(value - 0.5) / 0.5
     dynamic_range = abs(full_forward - full_stop)
     delta = range_ratio * dynamic_range
     result = full_stop + delta
@@ -192,7 +192,7 @@ def dynamic_range_backward(value):
         return full_backward
     if value == 0.5:
         raise Exception(f"Value should not be equal to full_stop: {value}")
-    range_ratio = abs(value - 0.5)/0.5
+    range_ratio = abs(value - 0.5) / 0.5
     dynamic_range = abs(full_backward - full_stop)
     delta = range_ratio * dynamic_range
     result = full_stop - delta
@@ -201,7 +201,7 @@ def dynamic_range_backward(value):
     return result
 
 
-def control_signal_handler(value):
+def apply_control_signal(value):
     global motion_time
     global prev_value
     global motion_duty_cycle
