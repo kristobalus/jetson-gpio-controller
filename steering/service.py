@@ -4,6 +4,17 @@ from urllib.parse import urlparse
 import paho.mqtt.client as mqtt
 import logging as log
 from unittest.mock import MagicMock
+import signal
+import sys
+
+
+def graceful_shutdown(signal_number, frame):
+    print("Shutting down gracefully...")
+    sys.exit(0)
+
+
+signal.signal(signal.SIGTERM, graceful_shutdown)
+
 
 log_level = os.getenv('LOG_LEVEL', 'INFO')
 log.basicConfig(
@@ -31,6 +42,8 @@ pin = int(config.get('pin', 15))
 frequency = int(config.get('frequency', 400))
 use_fake_device = bool(config.get('use_fake_device', False))
 topic = config.get('topic')
+
+log.info("configuration %s", {"config": config})
 
 if topic is None:
     raise Exception("Should have topic defined")

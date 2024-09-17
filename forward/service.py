@@ -9,6 +9,17 @@ import paho.mqtt.client as mqtt
 import math
 from unittest.mock import MagicMock
 import logging as log
+import signal
+import sys
+
+
+def graceful_shutdown(signal_number, frame):
+    print("Shutting down gracefully...")
+    sys.exit(0)
+
+
+signal.signal(signal.SIGTERM, graceful_shutdown)
+
 
 # configure logging
 # get log level from environment variable
@@ -37,6 +48,8 @@ full_stop = int(config.get("full_stop", 53))
 use_dynamic_range = bool(config.get('use_dynamic_range', False))
 use_fake_device = bool(config.get('use_fake_device', False))
 topic = config.get('topic')
+
+log.info("configuration %s", {"config": config})
 
 if topic is None:
     raise Exception("Should have topic defined")
