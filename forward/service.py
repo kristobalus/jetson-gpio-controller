@@ -224,9 +224,9 @@ def dynamic_range_backward(value):
     dynamic_range = abs(full_backward - full_stop)
     delta = range_ratio * dynamic_range
     result = full_stop - delta
-    result = max(math.floor(result), full_backward)
+    result = max(result, full_backward)
     if backward_forbidden_min <= result <= backward_forbidden_max:
-        result = max(full_backward, backward_forbidden_min - 1)
+        result = backward_forbidden_min - 0.1
 
     log.debug(f"dynamic_range: {dynamic_range}, range_ratio={range_ratio}, result={result}")
 

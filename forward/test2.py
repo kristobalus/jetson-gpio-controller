@@ -54,4 +54,4 @@ dynamic_range_backward(0.1)
 dynamic_range_backward(0)
 
 print("-------")
-dynamic_range_backward(0.48)
+dynamic_range_backward(0.28)
