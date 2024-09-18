@@ -210,7 +210,7 @@ def dynamic_range_forward(value):
     dynamic_range = abs(full_forward - full_stop)
     delta = range_ratio * dynamic_range
     result = full_stop + delta
-    result = min(math.ceil(result), full_forward)
+    result = min(result, full_forward)
     log.debug(f"dynamic_range: {dynamic_range}, range_ratio={range_ratio}, result={result}")
     return result
 
