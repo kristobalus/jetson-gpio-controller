@@ -1,3 +1,11 @@
+## 0.6.3 (2024-09-18)
+
+### Fix
+
+- forbidden interval
+- forbidden interval
+- no forward on thread stop
+
 ## 0.6.2 (2024-09-18)
 
 ### Fix
