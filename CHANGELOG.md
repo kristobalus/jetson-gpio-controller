@@ -1,3 +1,9 @@
+## 0.6.1 (2024-09-18)
+
+### Fix
+
+- no forward on thread stop
+
 ## 0.6.0 (2024-09-18)
 
 ### Feat
