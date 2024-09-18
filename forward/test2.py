@@ -1,20 +1,29 @@
 
 import math
 
-full_forward = 63
+full_forward = 57
 full_stop = 53
-full_backward = 43
+full_backward = 49
 
 
 def dynamic_range_forward(value):
+    print(f"value={value}")
     if value == 0.5:
         return full_stop
     range_ratio = abs(value - 0.5)/0.5
+    print(f"range_ratio={range_ratio}")
     dynamic_range = abs(full_forward - full_stop)
+    print(f"dynamic_range={dynamic_range}")
     delta = range_ratio * dynamic_range
+    print(f"delta={delta}")
     result = full_stop + delta
+    print(f"result={result}")
     result = min(math.ceil(result), full_forward)
-    print(f"dynamic_range: {dynamic_range}, delta={delta}, range_ratio={range_ratio}, result={result}")
+    # if value < full_stop:
+    #     result = math.floor(result)
+    # elif value > full_stop:
+    #     result = math.ceil(result)
+    print(f"result={result}")
     return result
 
 
@@ -43,3 +52,6 @@ dynamic_range_backward(0.3)
 dynamic_range_backward(0.2)
 dynamic_range_backward(0.1)
 dynamic_range_backward(0)
+
+print("-------")
+dynamic_range_backward(0.48)

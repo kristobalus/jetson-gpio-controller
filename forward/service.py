@@ -46,6 +46,9 @@ full_backward = int(config.get("full_backward", 40))
 full_stop = int(config.get("full_stop", 53))
 use_dynamic_range = bool(config.get('use_dynamic_range', False))
 use_fake_device = bool(config.get('use_fake_device', False))
+backward_forbidden_min = int(config.get("backward_forbidden_min", 50))
+backward_forbidden_max = int(config.get("backward_forbidden_max", 52))
+
 topic = config.get('topic')
 service_id = config.get('service_id')
 node_id = config.get('node_id')
@@ -223,6 +226,10 @@ def dynamic_range_backward(value):
     result = full_stop - delta
     result = max(math.floor(result), full_backward)
     log.debug(f"dynamic_range: {dynamic_range}, range_ratio={range_ratio}, result={result}")
+
+    if backward_forbidden_min <= result <= backward_forbidden_max:
+        result = max(full_backward, backward_forbidden_min - 1)
+
     return result
 
 
