@@ -185,7 +185,7 @@ def on_message(client, userdata, msg):
         try:
             arr = json.loads(msg.payload.decode())
             log.debug("MQTT control signal received %s", arr)
-            apply_control_signal(arr[0])
+            apply_control_signal_simple(arr[0])
         except Exception as e:
             log.error(e)
     elif msg.topic == "manager/service/trigger-status":
@@ -277,10 +277,37 @@ def apply_control_signal(value):
             go_backward(0.1)
             go_stop(0.1)
             start_motion_thread()
-
     prev_value = value
     log.debug(f"new motion_duty_cycle={motion_duty_cycle}")
     log.debug(f"new motion time={motion_time}")
+
+
+def apply_control_signal_simple(value):
+    global motion_time
+    global prev_value
+    global motion_duty_cycle
+
+    log.debug(f"new signal value={value}")
+    log.debug(f"previous signal value={prev_value}")
+
+    if value > 0.5:
+        log.debug("motion forward requested")
+        with motion_duty_cycle_lock:
+            motion_duty_cycle = dynamic_range_forward(value)
+        start_motion_thread()
+
+    if value == 0.5:
+        log.debug("full stop requested")
+        with motion_duty_cycle_lock:
+            motion_duty_cycle = full_stop
+        start_motion_thread()
+
+    if value < 0.5:
+        # backward motion
+        log.debug("motion backward requested")
+        with motion_duty_cycle_lock:
+            motion_duty_cycle = dynamic_range_backward(value)
+        start_motion_thread()
 
 
 # MQTT client setup
