@@ -128,15 +128,15 @@ def motion_thread_handler():
         pwm.ChangeDutyCycle(current_duty_cycle)  # Simulate PWM action
         time.sleep(0.001)  # prevent high CPU overusage
     log.debug(f"motion loop timeout")
-    if motion_duty_cycle < full_stop:
-        # log.debug(f"prevent PWM controller locking")
-        # go_forward(0.001)
-        go_stop(0.1)
-    if motion_duty_cycle > full_stop:
-        go_stop(0.1)
-    with prev_value_lock:
-        prev_value = full_stop
-    log.debug(f"now full stop")
+    # if motion_duty_cycle < full_stop:
+    #     # log.debug(f"prevent PWM controller locking")
+    #     # go_forward(0.001)
+    #     go_stop(0.1)
+    # if motion_duty_cycle > full_stop:
+    #     go_stop(0.1)
+    # with prev_value_lock:
+    #     prev_value = full_stop
+    # log.debug(f"now full stop")
     log.debug(f"thread end")
 
 
