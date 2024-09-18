@@ -22,9 +22,12 @@ def go_stop(interval):
 
 
 def go_forward(interval):
-    start_time = time.time()
-    while time.time() - start_time < interval:
+    if interval == 0:
         pwm.ChangeDutyCycle(full_forward)
+    else:
+        start_time = time.time()
+        while time.time() - start_time < interval:
+            pwm.ChangeDutyCycle(full_forward)
 
 
 def go_backward(interval):

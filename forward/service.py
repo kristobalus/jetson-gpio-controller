@@ -20,7 +20,6 @@ def graceful_shutdown(signal_number, frame):
 
 signal.signal(signal.SIGTERM, graceful_shutdown)
 
-
 # configure logging
 # get log level from environment variable
 log_level = os.getenv('LOG_LEVEL', 'INFO')
@@ -51,7 +50,6 @@ topic = config.get('topic')
 service_id = config.get('service_id')
 node_id = config.get('node_id')
 
-
 log.info("configuration %s", {"config": config})
 
 if topic is None:
@@ -71,6 +69,8 @@ MQTT_BROKER_PORT = int(parsed_url.port)
 if use_fake_device:
     def on_side_effect(duty_cycle):
         log.debug(f"Fake PWM: duty cycle applied={duty_cycle}")
+
+
     pwm = MagicMock()
     pwm.ChangeDutyCycle = MagicMock(side_effect=on_side_effect)
 else:
@@ -100,10 +100,13 @@ def go_stop(duration):
 
 
 def go_forward(duration):
-    start_time = time.time()
-    while time.time() - start_time < duration:
+    if duration == 0:
         pwm.ChangeDutyCycle(full_forward)
-    log.debug(f"go_forward completed for {duration} secs")
+    else:
+        start_time = time.time()
+        while time.time() - start_time < duration:
+            pwm.ChangeDutyCycle(full_forward)
+        log.debug(f"go_forward completed for {duration} secs")
 
 
 def go_backward(duration):
@@ -128,15 +131,14 @@ def motion_thread_handler():
         pwm.ChangeDutyCycle(current_duty_cycle)  # Simulate PWM action
         time.sleep(0.001)  # prevent high CPU overusage
     log.debug(f"motion loop timeout")
-    # if motion_duty_cycle < full_stop:
-    #     # log.debug(f"prevent PWM controller locking")
-    #     # go_forward(0.001)
-    #     go_stop(0.1)
-    # if motion_duty_cycle > full_stop:
-    #     go_stop(0.1)
-    # with prev_value_lock:
-    #     prev_value = full_stop
-    # log.debug(f"now full stop")
+    if motion_duty_cycle < full_stop:
+        log.debug(f"prevent PWM controller locking")
+        go_forward(0.001)
+    if motion_duty_cycle > full_stop:
+        go_stop(0.1)
+    with prev_value_lock:
+        prev_value = full_stop
+    log.debug(f"now full stop")
     log.debug(f"thread end")
 
 
