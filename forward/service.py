@@ -175,7 +175,7 @@ def on_connect(client, userdata, flags, rc):
     log.info(f"MQTT subscribed to {topic}")
 
     client.subscribe("manager/service/trigger-status")
-    log.info(f"MQTT subscribed to {topic}")
+    log.info(f"MQTT subscribed to manager/service/trigger-status")
 
 
 def on_message(client, userdata, msg):
