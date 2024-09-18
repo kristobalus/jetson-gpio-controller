@@ -48,6 +48,9 @@ full_stop = int(config.get("full_stop", 53))
 use_dynamic_range = bool(config.get('use_dynamic_range', False))
 use_fake_device = bool(config.get('use_fake_device', False))
 topic = config.get('topic')
+service_id = config.get('service_id')
+node_id = config.get('node_id')
+
 
 log.info("configuration %s", {"config": config})
 
@@ -180,6 +183,12 @@ def on_message(client, userdata, msg):
             apply_control_signal(arr[0])
         except Exception as e:
             log.error(e)
+    elif msg.topic == "manager/service/trigger-status":
+        log.debug("sending status")
+        if service_id is not None:
+            client.publish(f"services/{service_id}/status", json.dumps({"id": node_id, "status": "RUNNING"}))
+        if node_id is not None:
+            client.publish(f"nodes/{node_id}/status", json.dumps({"id": node_id, "status": "RUNNING"}))
     else:
         log.debug(f"Unknown topic: {msg.topic}")
 
