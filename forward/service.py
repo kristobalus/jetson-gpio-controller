@@ -68,10 +68,9 @@ MQTT_BROKER_PORT = int(parsed_url.port)
 if use_fake_device:
     def on_side_effect(duty_cycle):
         log.debug(f"Fake PWM: duty cycle applied={duty_cycle}")
-
-
     pwm = MagicMock()
-    pwm.ChangeDutyCycle = MagicMock(side_effect=on_side_effect)
+    pwm.ChangeDutyCycle = MagicMock()
+    # pwm.ChangeDutyCycle = MagicMock(side_effect=on_side_effect)
 else:
     import Jetson.GPIO as GPIO
 
