@@ -69,8 +69,7 @@ if use_fake_device:
     def on_side_effect(duty_cycle):
         log.debug(f"Fake PWM: duty cycle applied={duty_cycle}")
     pwm = MagicMock()
-    pwm.ChangeDutyCycle = MagicMock()
-    # pwm.ChangeDutyCycle = MagicMock(side_effect=on_side_effect)
+    pwm.ChangeDutyCycle = MagicMock(side_effect=on_side_effect)
 else:
     import Jetson.GPIO as GPIO
 
@@ -172,12 +171,12 @@ def on_connect(client, userdata, flags, rc):
 
 
 def on_message(client, userdata, msg):
-    # log.debug("MQTT message received on topic " + msg.topic + ": " + str(msg.payload.decode()))
+    log.debug("MQTT message received on topic " + msg.topic + ": " + str(msg.payload.decode()))
 
     if msg.topic == topic:
         try:
             arr = json.loads(msg.payload.decode())
-            # log.debug("MQTT control signal received %s", arr)
+            log.debug("MQTT control signal received %s", arr)
             apply_control_signal(arr[0])
         except Exception as e:
             log.error(e)
