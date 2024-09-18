@@ -129,8 +129,8 @@ def motion_thread_handler():
         time.sleep(0.001)  # prevent high CPU overusage
     log.debug(f"motion loop timeout")
     if motion_duty_cycle < full_stop:
-        log.debug(f"prevent PWM controller locking")
-        go_forward(0.1)
+        # log.debug(f"prevent PWM controller locking")
+        # go_forward(0.001)
         go_stop(0.1)
     if motion_duty_cycle > full_stop:
         go_stop(0.1)
